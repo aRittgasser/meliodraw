@@ -1,0 +1,19 @@
+﻿<Application x:Class="Melio.Draw.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Melio.Draw">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Office2013/Generic.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Windows8/Generic.xaml" />-->
+                <ResourceDictionary>
+                    <local:PointToStringConverter x:Key="PointToStringConverter" />
+                    <local:Vector2ToStringConverter x:Key="Vector2ToStringConverter" />
+                    <local:FloatToStringConverter x:Key="FloatToStringConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

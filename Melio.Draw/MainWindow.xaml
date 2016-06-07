@@ -1,0 +1,160 @@
+﻿<fluent:RibbonWindow x:Class="Melio.Draw.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Melio.Draw"
+        xmlns:tools="clr-namespace:Melio.Draw.Tools"
+        mc:Ignorable="d"
+        xmlns:fluent="clr-namespace:Fluent;assembly=Fluent"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:dx="clr-namespace:Melio.Draw.SharpDX"
+        xmlns:cmd="clr-namespace:Melio.Draw.Commands"
+        xmlns:controls="clr-namespace:Melio.Draw.Controls"
+        Title="Melio Draw" Height="600" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="100px"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="100px"/>
+			<ColumnDefinition Width="4px" />
+			<ColumnDefinition Width="240px" MinWidth="100px"/>
+		</Grid.ColumnDefinitions>
+        <fluent:Ribbon Grid.Row="0" Grid.ColumnSpan="3">
+            <fluent:Ribbon.Menu>
+                <fluent:Backstage Header="Datei">
+                    <fluent:BackstageTabControl>
+                        <!--<fluent:Button Header="Neu"/>
+                        <fluent:Button Header="Öffnen"/>
+                        <fluent:Button Header="Speichern"/>
+                        <fluent:Button Header="Speichern unter"/>
+                        <fluent:Button Header="Exportieren"/>-->
+                        <fluent:Button Header="Beenden" Command="{Binding CloseCommand}"/>
+                    </fluent:BackstageTabControl>
+                </fluent:Backstage>
+            </fluent:Ribbon.Menu>
+            <fluent:RibbonTabItem Header="Erstellen">
+                <fluent:RibbonGroupBox Header="Werkzeuge">
+                    <fluent:Gallery MinItemsInRow="8" MaxItemsInRow="8" Selectable="True" ItemWidth="48" ItemHeight="48"
+							ItemsSource="{Binding Project.Tools}" SelectedItem="{Binding Project.SelectedTool}">
+                        <fluent:Gallery.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!-- Farbe Orange zu Debugzwecken -->
+                                <StackPanel Orientation="Horizontal" Background="Orange" />
+                            </ItemsPanelTemplate>
+                        </fluent:Gallery.ItemsPanel>
+                        <fluent:Gallery.ItemTemplate>
+							<DataTemplate DataType="tools:BaseTool">
+								<!-- Eine Variante mit Text unter dem Bild hat nicht gut ausgesehen. Ggf. später nochmal neu Stylen -->
+								<Image Width="48" Height="48" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0"
+										Source="{Binding Path=ImageSourceUri}" Stretch="None" ToolTip="{Binding Path=Tooltip}" />
+							</DataTemplate>
+						</fluent:Gallery.ItemTemplate>
+                    </fluent:Gallery>
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+        </fluent:Ribbon>
+        <dx:DXElement x:Name="Editor" Grid.Column="0" Grid.Row="1" Renderer="{Binding Project.D3D11}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <cmd:InvokeCommandAction Command="{Binding Project.MouseEnterCommand}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <cmd:InvokeCommandAction Command="{Binding Project.MouseLeaveCommand}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseDown">
+					<cmd:InvokeCommandAction Command="{Binding Project.MouseDownCommand}" />
+				</i:EventTrigger>
+				<i:EventTrigger EventName="MouseMove">
+					<cmd:InvokeCommandAction Command="{Binding Project.MouseMoveCommand}" />
+				</i:EventTrigger>
+                <i:EventTrigger EventName="MouseWheel">
+					<cmd:InvokeCommandAction Command="{Binding Project.MouseWheelCommand}" />
+				</i:EventTrigger>
+                <i:EventTrigger EventName="PreviewMouseWheel">
+					<cmd:InvokeCommandAction Command="{Binding Project.PreviewMouseWheelCommand}" />
+				</i:EventTrigger>
+				<i:EventTrigger EventName="MouseUp">
+					<cmd:InvokeCommandAction Command="{Binding Project.MouseUpCommand}" />
+				</i:EventTrigger>
+				<i:EventTrigger EventName="KeyDown">
+					<cmd:InvokeCommandAction Command="{Binding Project.KeyDownCommand}" />
+				</i:EventTrigger>
+				<i:EventTrigger EventName="KeyUp">
+					<cmd:InvokeCommandAction Command="{Binding Project.KeyUpCommand}" />
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+        </dx:DXElement>
+        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch"/>
+        <Grid Grid.Column="2" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Row="0" d:DataContext="{d:DesignData DesignData/Sample.xaml}" Content="{Binding Project.SelectedTool}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type tools:Rectangle}">
+                        <StackPanel>
+                            <Grid Height="100px" VerticalAlignment="Center">
+                                <Rectangle VerticalAlignment="Stretch" Height="100px" Width="Auto">
+                                    <Rectangle.Fill>
+                                        <ImageBrush ImageSource="pack://application:,,,/Content/Images/background.png" TileMode="FlipXY" Stretch="UniformToFill" ViewportUnits="Absolute"  AlignmentX="Left" Viewport="0,0,14,14"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Rectangle Height="100px" Fill="{Binding Color.Brush}"/>
+                            </Grid>
+                            <controls:ColorChannelSlider Channel="Red" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Green" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Blue" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Hue" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Saturation" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Value" Color="{Binding Color}"/>
+                            <controls:ColorChannelSlider Channel="Alpha" Color="{Binding Color}"/>
+                            <!--<TextBox Text="{Binding Color.Red}"/>
+                            <TextBox Text="{Binding Color.Green}"/>
+                            <TextBox Text="{Binding Color.Blue}"/>
+                            <TextBox Text="{Binding Color.Alpha}"/>
+                            <TextBox Text="{Binding Color.Hue}"/>
+                            <TextBox Text="{Binding Color.Saturation}"/>
+                            <TextBox Text="{Binding Color.Value}"/>-->
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type tools:Selection}">
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0">Breite</TextBlock>
+                                <TextBox Grid.Column="1"></TextBox>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0">Höhe</TextBlock>
+                                <TextBox Grid.Column="1"></TextBox>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+            <controls:Outliner Grid.Row="1" DataContext="{Binding Project.Items}">
+                
+            </controls:Outliner>
+        </Grid>
+        <fluent:StatusBar Grid.Row="2" Grid.ColumnSpan="3">
+            <fluent:StatusBarItem HorizontalAlignment="Left">
+				<TextBlock Text="{Binding MousePosition, Converter={StaticResource ResourceKey=Vector2ToStringConverter}, ElementName=Editor, StringFormat=Position: \{0\}}" VerticalAlignment="Center" />
+			</fluent:StatusBarItem>
+            <fluent:StatusBarItem HorizontalAlignment="Right">
+				<TextBlock Text="{Binding Renderer.Camera.Zoom, Converter={StaticResource ResourceKey=FloatToStringConverter}, ElementName=Editor, StringFormat=Zoom: \{0\}}" VerticalAlignment="Center" />
+			</fluent:StatusBarItem>
+        </fluent:StatusBar>
+    </Grid>
+</fluent:RibbonWindow>

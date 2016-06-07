@@ -1,0 +1,15 @@
+﻿<vm:MainWindowVM xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:tools="clr-namespace:Melio.Draw.Tools"
+                    xmlns:vm="clr-namespace:Melio.Draw.ViewModel">
+    <vm:MainWindowVM.Project>
+        <vm:ProjectMV>
+            <vm:ProjectMV.SelectedTool>
+                <tools:Rectangle>
+                    
+                </tools:Rectangle>
+            </vm:ProjectMV.SelectedTool>
+        </vm:ProjectMV>
+    </vm:MainWindowVM.Project>
+    
+</vm:MainWindowVM>
